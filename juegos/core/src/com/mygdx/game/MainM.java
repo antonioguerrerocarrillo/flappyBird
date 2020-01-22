@@ -9,24 +9,19 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
-public class LooseScreen implements Screen {
+public class MainM implements Screen {
         
         final gotas game;
 	OrthographicCamera camera;
-        
-	public LooseScreen(final gotas gam) {
+
+	public MainM(final gotas gam) {
 		game = gam;
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 
 	}
-        public LooseScreen() {
-                game = null;
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800, 480);
 
-	}
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
@@ -36,12 +31,12 @@ public class LooseScreen implements Screen {
 		game.batch.setProjectionMatrix(camera.combined);
 
 		game.batch.begin();
-		game.font.draw(game.batch, "hola que pasa bro!! ", 100, 150);
+		game.font.draw(game.batch, "Welcome to Drop!!! ", 100, 150);
 		game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
 		game.batch.end();
 
 		if (Gdx.input.isTouched()) {
-			game.setScreen((Screen) new gameScreen(game));
+			game.setScreen(new gameScreen(game));
 			dispose();
 		}
 	}
