@@ -10,35 +10,48 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 
-public class MainM implements Screen {
-        private Texture  imagenInicio;
+public class LooseScreen implements Screen {
+        private Texture  imagenFinal;
         final gotas game;
 	OrthographicCamera camera;
-        
-	public MainM(final gotas gam) {
+        int score;
+	public LooseScreen(final gotas gam) {
 		game = gam;
-                imagenInicio = new Texture(Gdx.files.internal("fondoInicio.jpg"));
+                
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, 800, 480);
+
+	}
+        public LooseScreen() {
+                game = null;
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 
 	}
 
-	@Override
+       public void puntos(int puntos){
+          
+            this.score = puntos;
+             //System.out.println("puntos aqui " + puntos + " score " + score);
+       }
+        @Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+                imagenFinal = new Texture(Gdx.files.internal("fondoFinal.jpg"));
+                //System.out.println("puntos "+ score);
 		camera.update();
 		game.batch.setProjectionMatrix(camera.combined);
 
 		game.batch.begin();
-                game.batch.draw(imagenInicio, 0, 0, 800,480);
-		game.font.draw(game.batch, "hola este es el super juego!! ", 300, 350);
-		game.font.draw(game.batch, "Flappy Raul Arenas!", 300, 300);
+                 game.batch.draw(imagenFinal, 0, 0, 800,480);
+		game.font.draw(game.batch, "bien has optenido!! ", 300, 350);
+		game.font.draw(game.batch, "puntuacion total! ", 300, 300);
+                game.font.draw(game.batch, " = " + score + "!! ", 300, 250);
 		game.batch.end();
 
 		if (Gdx.input.isTouched()) {
-			game.setScreen( new gameScreen(game));
+			game.setScreen((Screen) new gameScreen(game));
 			dispose();
 		}
 	}
@@ -66,4 +79,7 @@ public class MainM implements Screen {
 	@Override
 	public void dispose() {
 	}
+
+ 
+
 }
