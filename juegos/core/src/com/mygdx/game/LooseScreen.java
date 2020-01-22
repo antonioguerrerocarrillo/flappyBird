@@ -17,7 +17,6 @@ public class LooseScreen implements Screen {
         int score;
 	public LooseScreen(final gotas gam) {
 		game = gam;
-                
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 
@@ -46,13 +45,13 @@ public class LooseScreen implements Screen {
 		game.batch.begin();
                  game.batch.draw(imagenFinal, 0, 0, 800,480);
 		game.font.draw(game.batch, "bien has optenido!! ", 300, 350);
-		game.font.draw(game.batch, "puntuacion total! ", 300, 300);
-                game.font.draw(game.batch, " = " + score + "!! ", 300, 250);
+		game.font.draw(game.batch, "una puntuacion total! ", 300, 300);
+                game.font.draw(game.batch, "de = " + score + "!! ", 300, 250);
 		game.batch.end();
 
 		if (Gdx.input.isTouched()) {
-			game.setScreen((Screen) new gameScreen(game));
-			dispose();
+                    game.setScreen((Screen) new gameScreen(game));
+                    dispose();
 		}
 	}
 

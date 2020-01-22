@@ -34,7 +34,8 @@ public class MainM implements Screen {
 		game.batch.begin();
                 game.batch.draw(imagenInicio, 0, 0, 800,480);
 		game.font.draw(game.batch, "hola este es el super juego!! ", 300, 350);
-		game.font.draw(game.batch, "Flappy Raul Arenas!", 300, 300);
+		game.font.draw(game.batch, "Flappy Birds!", 300, 300);
+                game.font.draw(game.batch, "Toca para comenzar ", 300, 300);
 		game.batch.end();
 
 		if (Gdx.input.isTouched()) {

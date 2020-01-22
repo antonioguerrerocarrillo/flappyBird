@@ -21,19 +21,17 @@ import com.badlogic.gdx.utils.TimeUtils;
 import java.util.Iterator;
 
 public class gameScreen implements Screen {
-  private Texture imagenGota;
-  private Texture imagenGota2;
+  private Texture imagentubo;
+  private Texture imagentubo2;
    private Texture imagenCubo;
    private Texture imagen;
-  // private Texture imagen;
-   private Texture hola;
-   private Sound sonicoCaidaGota;
-   private Music musicaLluvia;
+   private Sound sonidocaida;
+   private Music musica;
    private SpriteBatch batch, batchi;
    private OrthographicCamera camara, camaras;
-   private Rectangle cubo;
-   private Array<Rectangle> gotasLluvia;
-   private long tiempoCaidaUltimaGota;
+   private Rectangle pajaro;
+   private Array<Rectangle> tubos;
+   private long tiempoTubo;
    boolean canJump = false;
    float xVelocity = 0;
    float yVelocity = 0;
@@ -43,54 +41,54 @@ public class gameScreen implements Screen {
    int score = 0;
 
  
-   private void creaGotaLluvia() {
+   private void crearTubo() {
       Rectangle gotaLluvia = new Rectangle();
       gotaLluvia.x = 800;
       gotaLluvia.y = MathUtils.random(-200, -50);
       gotaLluvia.width = 64;
       gotaLluvia.height = 300;
-      gotasLluvia.add(gotaLluvia);
+      tubos.add(gotaLluvia);
       
       Rectangle gotaLluvia2 = new Rectangle();
       gotaLluvia2.x = 800;
       gotaLluvia2.y = gotaLluvia.y + 550; 
       gotaLluvia2.width = 64;
       gotaLluvia2.height = 300;
-      gotasLluvia.add(gotaLluvia2);
-      tiempoCaidaUltimaGota = TimeUtils.nanoTime();
+      tubos.add(gotaLluvia2);
+      tiempoTubo = TimeUtils.nanoTime();
     }
 
   gameScreen(gotas game) {
        this.game = game;
-      // carga las imágenes de las gotas de lluvia y del cubo, cada una de 64x64 píxeles
+      // carga las imágenes de las gotas de lluvia y del pajaro, cada una de 64x64 píxeles
       
       imagen= new Texture(Gdx.files.internal("descarga.png"));
-      imagenGota = new Texture(Gdx.files.internal("tronco.png"));
-      imagenGota2 = new Texture(Gdx.files.internal("tronco2.png"));
+      imagentubo = new Texture(Gdx.files.internal("tronco.png"));
+      imagentubo2 = new Texture(Gdx.files.internal("tronco2.png"));
       imagenCubo = new Texture(Gdx.files.internal("bucket.png"));
 
       // carga de sonido para la caída de la gota y la música de fondo
-      sonicoCaidaGota = Gdx.audio.newSound(Gdx.files.internal("drop.mp3"));
-      musicaLluvia = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
+      sonidocaida = Gdx.audio.newSound(Gdx.files.internal("drop.mp3"));
+      musica = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
 
       // se aplica que la música se repita en bucle, comienza la reproducción de la música de fondo
-      musicaLluvia.setLooping(true);
-      musicaLluvia.play();
+      musica.setLooping(true);
+      musica.play();
 
       // crea la cámara ortográfica y el lote de sprites
       camara = new OrthographicCamera();
       camara.setToOrtho(false, 800, 480);
       batch = new SpriteBatch();
       batchi = new SpriteBatch();
-      // crea un rectángulo (clase Rectangle) para representar lógicamente el cubo
-      cubo = new Rectangle();
-      cubo.x = 220; // centra el cubo horizontal
-      cubo.y = 800 / 2 - 64 / 2; // esquina inferior izquierda del cubo estará a 20 píxeles del límite inferior
-      cubo.width = 150;
-      cubo.height = 61;
+      // crea un rectángulo (clase Rectangle) para representar lógicamente el pajaro
+      pajaro = new Rectangle();
+      pajaro.x = 220; // centra el pajaro horizontal
+      pajaro.y = 800 / 2 - 64 / 2; // esquina inferior izquierda del pajaro estará a 20 píxeles del límite inferior
+      pajaro.width = 150;
+      pajaro.height = 61;
       // crea el vector de gotas y crea la primera gota
-      gotasLluvia = new Array<Rectangle>();
-      creaGotaLluvia();
+      tubos = new Array<Rectangle>();
+      crearTubo();
    }
 
    @Override
@@ -107,18 +105,18 @@ public class gameScreen implements Screen {
       game.batch.setProjectionMatrix(camara.combined);
 
       
-      // comienza un nuevo proceso y dibuja el cubo y las gotas
+      // comienza un nuevo proceso y dibuja el pajaro y las gotas
       game.batch.begin();
       game.batch.draw(imagen, 0, 0, 800,480);
       game.font.draw(game.batch, "Puntuación " + score, 0, 480);
-      game.batch.draw(imagenCubo, cubo.x, cubo.y);
+      game.batch.draw(imagenCubo, pajaro.x, pajaro.y);
       int contador = 1;
-      for(Rectangle gotaLluvia: gotasLluvia) {
+      for(Rectangle gotaLluvia: tubos) {
          
          if(contador % 2 == 0){
-             game.batch.draw(imagenGota2, gotaLluvia.x, gotaLluvia.y);
+             game.batch.draw(imagentubo2, gotaLluvia.x, gotaLluvia.y);
          } else {
-             game.batch.draw(imagenGota, gotaLluvia.x, gotaLluvia.y);
+             game.batch.draw(imagentubo, gotaLluvia.x, gotaLluvia.y);
          }
          
          contador++;
@@ -133,36 +131,36 @@ public class gameScreen implements Screen {
          Vector3 posicionTocada = new Vector3();
          posicionTocada.set(Gdx.input.getX(), Gdx.input.getY(), 0);
          camara.unproject(posicionTocada);
-         cubo.y = posicionTocada.y - 64 / 2;
+         pajaro.y = posicionTocada.y - 64 / 2;
       }
        boolean upTouched = Gdx.input.isTouched() && Gdx.input.getY() < Gdx.graphics.getHeight() / 2;
        //caida
-        cubo.y -= 650 * Gdx.graphics.getDeltaTime();
+        pajaro.y -= 650 * Gdx.graphics.getDeltaTime();
          if (Gdx.input.isKeyPressed(Input.Keys.UP) || upTouched) {
              //salto
-               cubo.y +=  + 23;
+               pajaro.y +=  + 23;
         }
-      // nos aseguramos de que el cubo permanezca entre los límites de la pantalla
-      if(cubo.y < 0) cubo.y = 0;
-      if(cubo.y > 480 - 64) cubo.y = 480 - 64;
+      // nos aseguramos de que el pajaro permanezca entre los límites de la pantalla
+      if(pajaro.y < 0) pajaro.y = 0;
+      if(pajaro.y > 480 - 64) pajaro.y = 480 - 64;
 
       // comprueba si ha pasado un segundo desde la última gota, para crear una nueva
-      if(TimeUtils.nanoTime() - tiempoCaidaUltimaGota + 1000000 > 700000000) creaGotaLluvia();
+      if(TimeUtils.nanoTime() - tiempoTubo + 1000000 > 700000000) crearTubo();
 
-      // recorre las gotas y borra aquellas que hayan llegado al suelo (límite inferior de la pantalla) o toquen el cubo, en ese caso se reproduce sonido.
-      Iterator<Rectangle> iter = gotasLluvia.iterator();
+      // recorre las gotas y borra aquellas que hayan llegado al suelo (límite inferior de la pantalla) o toquen el pajaro, en ese caso se reproduce sonido.
+      Iterator<Rectangle> iter = tubos.iterator();
       Boolean segundo = false;
       while(iter.hasNext()) {
-         Rectangle gotaLluvia = iter.next();
-         gotaLluvia.x -= 400 * Gdx.graphics.getDeltaTime();
+         Rectangle tubos = iter.next();
+         tubos.x -= 400 * Gdx.graphics.getDeltaTime();
          if(segundo == false){
-            if(gotaLluvia.x + 64 < 0){
+            if(tubos.x + 64 < 0){
              iter.remove();
              score = score + 1;
             } 
             segundo = true;
          } else {
-            if(gotaLluvia.x + 64 < 0){
+            if(tubos.x + 64 < 0){
              iter.remove();
              segundo = false;
              
@@ -170,8 +168,8 @@ public class gameScreen implements Screen {
          }
              
         LooseScreen a = new LooseScreen(game);
-         if(gotaLluvia.overlaps(cubo)) {
-            sonicoCaidaGota.play();
+         if(tubos.overlaps(pajaro)) {
+            sonidocaida.play();
             a.puntos(score);
             game.setScreen((Screen) a);
             dispose();
@@ -182,17 +180,17 @@ public class gameScreen implements Screen {
    @Override
    public void dispose() {
       // liberamos todos los recursos
-      imagenGota.dispose();
+      imagentubo.dispose();
       imagenCubo.dispose();
-      sonicoCaidaGota.dispose();
-      musicaLluvia.dispose();
+      sonidocaida.dispose();
+      musica.dispose();
       
       
    }
 
     @Override
     public void show() {
-        musicaLluvia.play();
+        musica.play();
     }
 
     @Override
